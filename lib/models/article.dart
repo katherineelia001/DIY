@@ -1,24 +1,28 @@
 // ignore_for_file: constant_identifier_names
 
 class Article {
-  late String name;
-  late String description;
-  late DateTime date;
-  late Difficulty diff;
-  late List<String> tools;
-  late List<String> steps;
+  late String? name;
+  late String? description;
+  DateTime? datePosted = DateTime.now();
+  late String? diff;
+  late List<String>? tools;
+  late List<String>? steps;
+  late Map<String, bool>? publicFields;
 
   Article(
       {required this.name,
-      required this.description,
-      required this.date,
-      required this.diff,
-      required this.tools,
-      required this.steps});
-}
+      this.description,
+      this.datePosted,
+      this.diff,
+      this.tools,
+      this.steps,
+      required this.publicFields});
 
-enum Difficulty {
-  Easy,
-  Medium,
-  Hard,
+  Map toJson() {
+    return {'name': name};
+  }
+
+  Article fromJson(Map<String, dynamic> map) {
+    return Article(name: map['name'], publicFields: publicFields);
+  }
 }
