@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:diy/screens/add_article.dart';
+import 'package:diy/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:at_client_mobile/at_client_mobile.dart';
 import 'package:at_onboarding_flutter/at_onboarding_flutter.dart'
@@ -43,6 +45,7 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       // * The onboarding screen (first screen)
+      routes: {'/add-guide': (context) => const AddArticle()},
       home: Scaffold(
         appBar: AppBar(
           title: const Text('MyApp'),
@@ -79,31 +82,31 @@ class _MyAppState extends State<MyApp> {
   }
 }
 
-//* The next screen after onboarding (second screen)
-class HomeScreen extends StatelessWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+// //* The next screen after onboarding (second screen)
+// class HomeScreen extends StatelessWidget {
+//   const HomeScreen({Key? key}) : super(key: key);
 
-  @override
-  Widget build(BuildContext context) {
-    /// Get the AtClientManager instance
-    var atClientManager = AtClientManager.getInstance();
+//   @override
+//   Widget build(BuildContext context) {
+//     /// Get the AtClientManager instance
+//     var atClientManager = AtClientManager.getInstance();
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Dashboard'),
-      ),
-      body: Center(
-        child: Column(
-          children: [
-            const Text(
-                'Successfully onboarded and navigated to FirstAppScreen'),
+//     return Scaffold(
+//       appBar: AppBar(
+//         title: const Text('Dashboard'),
+//       ),
+//       body: Center(
+//         child: Column(
+//           children: [
+//             const Text(
+//                 'Successfully onboarded and navigated to FirstAppScreen'),
 
-            /// Use the AtClientManager instance to get the current atsign
-            Text(
-                'Current @sign: ${atClientManager.atClient.getCurrentAtSign()}'),
-          ],
-        ),
-      ),
-    );
-  }
-}
+//             /// Use the AtClientManager instance to get the current atsign
+//             Text(
+//                 'Current @sign: ${atClientManager.atClient.getCurrentAtSign()}'),
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+// }
