@@ -1,13 +1,14 @@
 // ignore_for_file: constant_identifier_names
 
 class Article {
-  late String? name;
-  late String? description;
+  String name;
+  String? description;
   DateTime? datePosted = DateTime.now();
-  late String? diff;
-  late List<String>? tools;
-  late List<String>? steps;
-  late Map<String, bool>? publicFields;
+  String? diff;
+  List<String>? tools;
+  List<String>? steps;
+  bool isPrivate = false;
+  Map<String, bool> privateFields;
 
   Article(
       {required this.name,
@@ -16,13 +17,31 @@ class Article {
       this.diff,
       this.tools,
       this.steps,
-      required this.publicFields});
+      required this.isPrivate,
+      required this.privateFields});
 
   Map toJson() {
-    return {'name': name};
+    return {
+      'name': name,
+      'description': description,
+      "datePosted": datePosted,
+      "difficulty": diff,
+      'tools': tools,
+      'steps': steps,
+      'isPrivate': isPrivate,
+      'privateFields': privateFields
+    };
   }
 
   Article fromJson(Map<String, dynamic> map) {
-    return Article(name: map['name'], publicFields: publicFields);
+    return Article(
+        name: map['name'],
+        description: map['description'],
+        datePosted: map['datePosted'],
+        diff: map['difficulty'],
+        tools: map['tools'],
+        steps: map['steps'],
+        isPrivate: map['isPrivate'],
+        privateFields: map['privateFields']);
   }
 }

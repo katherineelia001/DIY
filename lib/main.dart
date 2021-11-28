@@ -40,7 +40,6 @@ class _MyAppState extends State<MyApp> {
   AtClientPreference? atClientPreference;
 
   final AtSignLogger _logger = AtSignLogger(AtEnv.appNamespace);
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(

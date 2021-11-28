@@ -1,10 +1,11 @@
-// ignore_for_file: non_constant_identifier_names
+// ignore_for_file: non_constant_identifier_names, avoid_print
 
 import 'package:flutter/material.dart';
 
 import 'package:at_client_mobile/at_client_mobile.dart';
 import 'package:at_commons/at_commons.dart';
 
+import 'package:diy/constant.dart';
 import '../models/article.dart';
 
 class AddArticle extends StatefulWidget {
@@ -15,36 +16,87 @@ class AddArticle extends StatefulWidget {
 }
 
 class _AddArticleState extends State<AddArticle> {
-  bool isDescPublic = false;
-  bool isToolsPublic = false;
-  bool isStepsPublic = false;
+  bool isArticlePrivate = false;
+  bool isDescPrivate = false;
+  bool isToolsPrivate = false;
+  bool isStepsPrivate = false;
   TextEditingController nameController = TextEditingController();
   TextEditingController descController = TextEditingController();
   TextEditingController toolsController = TextEditingController();
   TextEditingController stepsController = TextEditingController();
   var dropDownItems = ["", "Easy", "Medium", "Hard"];
   String selectedDifficulty = "";
+  Article hello = Article(
+      isPrivate: true,
+      name: 'Hello',
+      diff: "Easy",
+      description: "This is how to make a Cake",
+      privateFields: {'name': true, 'description': true});
 
   @override
   Widget build(BuildContext context) {
     var atClientManager = AtClientManager.getInstance();
-    // Metadata data = Metadata()..isPublic = false;
-    // AtKey key = AtKey()
-    //   ..key = "Hello Word"
-    //   ..metadata = data;
-    // atClientManager.atClient.put(key, "Testing");
-    // print(key.toString());
-    AtKey key = AtKey()..key = "Hello Word";
-    // print(atClientManager.atClient.get(key));
-    // print(atClientManager.atClient.getKeys());
+
+    void createArticle() async {
+      print("Article is being created");
+      // var privateFields = {
+      //   'description': isDescPrivate,
+      //   'tools': isToolsPrivate,
+      //   'steps': isStepsPrivate,
+      //   // 'difficulty': isD
+      // };
+      // List<String> tools = toolsController.text.split(",");
+      // List<String> steps = stepsController.text.split(",");
+      // Article article = Article(
+      //     name: nameController.text,
+      //     description: descController.text,
+      //     tools: tools,
+      //     steps: steps,
+      //     isPrivate: isArticlePrivate,
+      //     privateFields: privateFields);
+
+      // print(article.toJson());
+
+      String? atSign =
+          AtClientManager.getInstance().atClient.getCurrentAtSign();
+
+      Map metaJson = Metadata().toJson();
+      // metaJson['isPublic'] = true;
+      metaJson['ttr'] = 1;
+      Metadata metadata = Metadata.fromJson(metaJson);
+
+      AtKey key = AtKey();
+      key.key = "Test 2";
+      key.metadata = metadata;
+      key.namespace = NAMESPACE;
+      // key.sharedWith = atSign;
+
+      String value = "Test2 Values";
+      var posted = await atClientManager.atClient.put(key, value);
+      posted ? print("Yay") : print("Boo!");
+    }
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('Add Article'),
+        actions: [
+          Switch(
+              value: isArticlePrivate,
+              onChanged: (bool val) {
+                setState(() {
+                  isArticlePrivate = val;
+                });
+              })
+        ],
       ),
       body: SingleChildScrollView(
         child: Column(
           children: [
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+              child: const Text(
+                  "All information is public by default. To set private, toggle on"),
+            ),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
               child: Row(
@@ -66,10 +118,10 @@ class _AddArticleState extends State<AddArticle> {
                     text: "Enter Article description",
                   ),
                   Switch(
-                    value: isDescPublic,
+                    value: isDescPrivate,
                     onChanged: (bool val) {
                       setState(() {
-                        isDescPublic = val;
+                        isDescPrivate = val;
                       });
                     },
                   ),
@@ -86,13 +138,12 @@ class _AddArticleState extends State<AddArticle> {
                     text: "Enter tool nessesary (seperated by ,)",
                   ),
                   Switch(
-                    value: isToolsPublic,
-                    onChanged: (bool val) {
-                      setState(() {
-                        isToolsPublic = val;
-                      });
-                    },
-                  ),
+                      value: isToolsPrivate,
+                      onChanged: (bool val) {
+                        setState(() {
+                          isToolsPrivate = val;
+                        });
+                      }),
                 ],
               ),
             ),
@@ -106,13 +157,12 @@ class _AddArticleState extends State<AddArticle> {
                     text: "Enter steps to complete",
                   ),
                   Switch(
-                    value: isStepsPublic,
-                    onChanged: (bool val) {
-                      setState(() {
-                        isStepsPublic = val;
-                      });
-                    },
-                  ),
+                      value: isStepsPrivate,
+                      onChanged: (bool val) {
+                        setState(() {
+                          isStepsPrivate = val;
+                        });
+                      }),
                 ],
               ),
             ),
@@ -128,6 +178,10 @@ class _AddArticleState extends State<AddArticle> {
               onChanged: (String? val) {
                 setState(() => selectedDifficulty = val!);
               },
+            ),
+            ElevatedButton(
+              onPressed: () => createArticle(),
+              child: const Text("Create Article "),
             ),
           ],
         ),
