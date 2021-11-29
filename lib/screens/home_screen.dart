@@ -18,7 +18,6 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   String? atSign = AtClientManager.getInstance().atClient.getCurrentAtSign();
   var atClientManager = AtClientManager.getInstance();
-  AtKey key = AtKey()..key = "Share1";
 
   @override
   Widget build(BuildContext context) {
@@ -39,11 +38,21 @@ class _HomeScreenState extends State<HomeScreen> {
             child: const Text("Add Article"),
           ),
           FutureBuilder(
-              future: scanYourArticles(),
+              future: scanNamespaceArticles(),
               builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
                 if (snapshot.hasData) {
                   List<Map<String, dynamic>> values = snapshot.data;
-                  return Text("$values");
+                  return Expanded(
+                    child: ListView.builder(
+                      itemCount: values.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text('${values[index]}'),
+                        );
+                      },
+                    ),
+                  );
                 }
                 return const Text("HAS NO DATA");
               })
@@ -92,11 +101,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<dynamic> lookup(AtKey? atKey) async {
     AtClient client = atClientManager.atClient;
-    // If an AtKey object exists
     if (atKey != null) {
-      // Simply get the AtKey object utilizing the serverDemoService's get method
       AtValue result = await client.get(atKey);
-
       return result.value;
     }
     return null;

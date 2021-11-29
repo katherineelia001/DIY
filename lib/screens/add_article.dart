@@ -20,18 +20,14 @@ class _AddArticleState extends State<AddArticle> {
   bool isDescPrivate = false;
   bool isToolsPrivate = false;
   bool isStepsPrivate = false;
+  bool isTagsPrivate = false;
   TextEditingController nameController = TextEditingController();
   TextEditingController descController = TextEditingController();
   TextEditingController toolsController = TextEditingController();
   TextEditingController stepsController = TextEditingController();
+  TextEditingController tagsController = TextEditingController();
   var dropDownItems = ["", "Easy", "Medium", "Hard"];
   String selectedDifficulty = "";
-  Article hello = Article(
-      isPrivate: true,
-      name: 'Hello',
-      diff: "Easy",
-      description: "This is how to make a Cake",
-      privateFields: {'name': true, 'description': true});
 
   @override
   Widget build(BuildContext context) {
@@ -39,41 +35,47 @@ class _AddArticleState extends State<AddArticle> {
 
     void createArticle() async {
       print("Article is being created");
-      // var privateFields = {
-      //   'description': isDescPrivate,
-      //   'tools': isToolsPrivate,
-      //   'steps': isStepsPrivate,
-      //   // 'difficulty': isD
-      // };
-      // List<String> tools = toolsController.text.split(",");
-      // List<String> steps = stepsController.text.split(",");
-      // Article article = Article(
-      //     name: nameController.text,
-      //     description: descController.text,
-      //     tools: tools,
-      //     steps: steps,
-      //     isPrivate: isArticlePrivate,
-      //     privateFields: privateFields);
+      var privateFields = {
+        'description': isDescPrivate,
+        'tools': isToolsPrivate,
+        'steps': isStepsPrivate,
+        // 'difficulty': isDifficultyPrivate
+      };
+      List<String> tools = toolsController.text.split(",");
+      List<String> steps = stepsController.text.split(",");
+      Article article = Article(
+          name: nameController.text,
+          description: descController.text,
+          tools: tools,
+          steps: steps,
+          datePosted: DateTime.now(),
+          difficulty: selectedDifficulty == "" ? null : selectedDifficulty,
+          isPrivate: isArticlePrivate,
+          privateFields: privateFields);
 
-      // print(article.toJson());
+      Map articleJson = article.toJson();
 
       String? atSign =
           AtClientManager.getInstance().atClient.getCurrentAtSign();
 
-      Map metaJson = Metadata().toJson();
+      // Map metaJson = Metadata().toJson();
       // metaJson['isPublic'] = true;
-      metaJson['ttr'] = 1;
-      Metadata metadata = Metadata.fromJson(metaJson);
+      // metaJson['ttr'] = 1;
+      // Metadata metadata = Metadata.fromJson(metaJson);
+
+      // Metadata metadata = Metadata();
+      // metadata.isPublic = true;
+      // metadata.ttr = 1;
 
       AtKey key = AtKey();
-      key.key = "Test 2";
-      key.metadata = metadata;
+      key.key = nameController.text;
+      // key.metadata = metadata;
       key.namespace = NAMESPACE;
-      // key.sharedWith = atSign;
+      key.sharedWith = atSign;
 
-      String value = "Test2 Values";
-      var posted = await atClientManager.atClient.put(key, value);
-      posted ? print("Yay") : print("Boo!");
+      var success =
+          await atClientManager.atClient.put(key, articleJson.toString());
+      success ? print("Yay") : print("Boo!");
     }
 
     return Scaffold(
