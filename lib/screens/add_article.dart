@@ -1,9 +1,13 @@
 // ignore_for_file: non_constant_identifier_names, avoid_print
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 import 'package:at_client_mobile/at_client_mobile.dart';
 import 'package:at_commons/at_commons.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:flutter_tags_x/flutter_tags_x.dart';
 
 import 'package:diy/constant.dart';
 import '../models/article.dart';
@@ -16,6 +20,7 @@ class AddArticle extends StatefulWidget {
 }
 
 class _AddArticleState extends State<AddArticle> {
+  var atClientManager = AtClientManager.getInstance();
   bool isArticlePrivate = false;
   bool isDescPrivate = false;
   bool isToolsPrivate = false;
@@ -28,55 +33,69 @@ class _AddArticleState extends State<AddArticle> {
   TextEditingController tagsController = TextEditingController();
   var dropDownItems = ["", "Easy", "Medium", "Hard"];
   String selectedDifficulty = "";
+  File? articleImage;
+  List<String> tags = [];
+
+  void createArticle() async {
+    print("Article is being created");
+    var privateFields = {
+      'description': isDescPrivate,
+      'tools': isToolsPrivate,
+      'steps': isStepsPrivate,
+      // 'difficulty': isDifficultyPrivate
+    };
+    List<String> tools = toolsController.text.split(",");
+    List<String> steps = stepsController.text.split(",");
+    Article article = Article(
+        name: nameController.text,
+        description: descController.text,
+        tools: tools,
+        steps: steps,
+        datePosted: DateTime.now(),
+        difficulty: selectedDifficulty == "" ? null : selectedDifficulty,
+        isPrivate: isArticlePrivate,
+        privateFields: privateFields);
+
+    Map articleJson = article.toJson();
+
+    String? atSign = AtClientManager.getInstance().atClient.getCurrentAtSign();
+
+    // Map metaJson = Metadata().toJson();
+    // metaJson['isPublic'] = true;
+    // metaJson['ttr'] = 1;
+    // Metadata metadata = Metadata.fromJson(metaJson);
+
+    // Metadata metadata = Metadata();
+    // metadata.isPublic = true;
+    // metadata.ttr = 1;
+
+    AtKey key = AtKey();
+    key.key = nameController.text;
+    // key.metadata = metadata;
+    key.namespace = NAMESPACE;
+    key.sharedWith = atSign;
+
+    var success =
+        await atClientManager.atClient.put(key, articleJson.toString());
+    // success ? print("Yay") : print("Boo!");
+  }
+
+  Future imagePicker() async {
+    final image = await ImagePicker().pickImage(source: ImageSource.camera);
+    try {
+      if (image == null) return;
+      final imageTemp = File(image.path);
+      setState(() => articleImage = imageTemp);
+      print(imageTemp);
+    } catch (e) {
+      print(e);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    var atClientManager = AtClientManager.getInstance();
-
-    void createArticle() async {
-      print("Article is being created");
-      var privateFields = {
-        'description': isDescPrivate,
-        'tools': isToolsPrivate,
-        'steps': isStepsPrivate,
-        // 'difficulty': isDifficultyPrivate
-      };
-      List<String> tools = toolsController.text.split(",");
-      List<String> steps = stepsController.text.split(",");
-      Article article = Article(
-          name: nameController.text,
-          description: descController.text,
-          tools: tools,
-          steps: steps,
-          datePosted: DateTime.now(),
-          difficulty: selectedDifficulty == "" ? null : selectedDifficulty,
-          isPrivate: isArticlePrivate,
-          privateFields: privateFields);
-
-      Map articleJson = article.toJson();
-
-      String? atSign =
-          AtClientManager.getInstance().atClient.getCurrentAtSign();
-
-      // Map metaJson = Metadata().toJson();
-      // metaJson['isPublic'] = true;
-      // metaJson['ttr'] = 1;
-      // Metadata metadata = Metadata.fromJson(metaJson);
-
-      // Metadata metadata = Metadata();
-      // metadata.isPublic = true;
-      // metadata.ttr = 1;
-
-      AtKey key = AtKey();
-      key.key = nameController.text;
-      // key.metadata = metadata;
-      key.namespace = NAMESPACE;
-      key.sharedWith = atSign;
-
-      var success =
-          await atClientManager.atClient.put(key, articleJson.toString());
-      success ? print("Yay") : print("Boo!");
-    }
+    // var atClientManager = AtClientManager.getInstance();
+    final List<XFile>? images;
 
     return Scaffold(
       appBar: AppBar(
@@ -168,6 +187,7 @@ class _AddArticleState extends State<AddArticle> {
                 ],
               ),
             ),
+
             DropdownButton(
               value: selectedDifficulty,
               items:
@@ -181,9 +201,55 @@ class _AddArticleState extends State<AddArticle> {
                 setState(() => selectedDifficulty = val!);
               },
             ),
+            OutlinedButton(
+              onPressed: () => imagePicker(),
+              child: const Icon(
+                Icons.image,
+                // color: Colors.pink,
+                size: 24.0,
+                semanticLabel: 'Select images for your article',
+              ),
+            ),
+            Tags(
+              // runSpacing: 1,
+              // horizontalScroll: true,
+
+              // symmetry: true,
+              itemCount: tags.length,
+              itemBuilder: (int index) {
+                final item = tags[index];
+                return ItemTags(
+                  key: Key(index.toString()),
+                  index: index,
+                  title: item,
+                  removeButton: ItemTagsRemoveButton(onRemoved: () {
+                    setState(() => tags.removeAt(index));
+                    return true;
+                  }),
+                );
+              },
+              textField: TagsTextField(
+                width: 400,
+                inputDecoration: const InputDecoration(
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(25),
+                      bottomLeft: Radius.circular(25),
+                      topRight: Radius.circular(25),
+                      bottomRight: Radius.circular(25),
+                    ),
+                  ),
+                ),
+                hintText: "Enter article's tags",
+                onSubmitted: (String? str) {
+                  setState(() => tags.add(str!));
+                },
+              ),
+            ),
+            // articleImage != null ? Image.file(articleImage!) : Container(),
             ElevatedButton(
               onPressed: () => createArticle(),
-              child: const Text("Create Article "),
+              child: const Text("Create Article"),
             ),
           ],
         ),
