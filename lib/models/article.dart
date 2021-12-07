@@ -1,15 +1,18 @@
 // ignore_for_file: constant_identifier_names
 
+import 'dart:io';
+
 class Article {
   String name;
   String? description;
   DateTime? datePosted;
   String? difficulty;
-  List<String>? tools;
-  List<String>? steps;
-  // List<String>? tags;
+  List? tools;
+  List? steps;
+  List? tags;
+  List? images;
   bool isPrivate = false;
-  Map<String, bool>? privateFields;
+  Map? privateFields;
 
   Article(
       {required this.name,
@@ -18,39 +21,27 @@ class Article {
       this.difficulty,
       this.tools,
       this.steps,
-      // this.tags,
+      this.tags,
+      this.images,
       required this.isPrivate,
       required this.privateFields});
 
   Map toJson() {
     return {
       'name': name,
-      'description': privateFields!['description'] == null ||
-              privateFields!['description'] == true
-          ? null
-          : description,
-      "datePosted": privateFields!['datePosted'] == null ||
-              privateFields!['datePosted'] == true
-          ? null
-          : datePosted,
+      'description': description,
+      "datePosted": datePosted,
       "difficulty": difficulty,
-      'tools':
-          privateFields!['tools'] == null || privateFields!['tools'] == true
-              ? null
-              : tools,
-      'steps':
-          privateFields!['steps'] == null || privateFields!['steps'] == true
-              ? null
-              : steps,
-      // 'tags': privateFields!['tags'] == null || privateFields!['tags'] == true
-      //     ? null
-      //     : tags,
+      'tools': tools,
+      'steps': steps,
+      'tags': tags,
+      'images': images,
       'isPrivate': isPrivate,
       'privateFields': privateFields
     };
   }
 
-  Article fromJson(Map<String, dynamic> map) {
+  factory Article.fromJson(Map<String, dynamic> map) {
     return Article(
         name: map['name'],
         description: map['description'],
@@ -58,7 +49,8 @@ class Article {
         difficulty: map['difficulty'],
         tools: map['tools'],
         steps: map['steps'],
-        // tags: map['tags'] ,
+        tags: map['tags'],
+        images: map['images'],
         isPrivate: map['isPrivate'],
         privateFields: map['privateFields']);
   }

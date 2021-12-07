@@ -1,7 +1,9 @@
 // ignore_for_file: avoid_print
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
-
+import 'package:diy/models/article.dart';
+import 'package:diy/screens/view_article.dart';
 import 'package:diy/screens/add_article.dart';
 import 'package:diy/constant.dart';
 
@@ -38,24 +40,43 @@ class _HomeScreenState extends State<HomeScreen> {
             child: const Text("Add Article"),
           ),
           FutureBuilder(
-              future: scanNamespaceArticles(),
-              builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-                if (snapshot.hasData) {
-                  List<Map<String, dynamic>> values = snapshot.data;
-                  return Expanded(
-                    child: ListView.builder(
-                      itemCount: values.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        return Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text('${values[index]}'),
-                        );
-                      },
-                    ),
-                  );
-                }
-                return const Text("HAS NO DATA");
-              })
+            future: scanNamespaceArticles(),
+            builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+              if (snapshot.hasData) {
+                List<Map<String, dynamic>> results = snapshot.data;
+                return Expanded(
+                  child: ListView.builder(
+                    itemCount: results.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      var articlejson =
+                          json.decode(results[index].values.elementAt(0));
+                      var article = Article.fromJson(articlejson);
+                      return Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: GestureDetector(
+                          onTap: () => {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ViewArticle(
+                                  article: article,
+                                ),
+                              ),
+                            ),
+                          },
+                          child: Card(
+                            elevation: 0,
+                            child: Text(results[index].keys.elementAt(0)),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                );
+              }
+              return const Text("HAS NO DATA");
+            },
+          ),
         ],
       ),
     );
@@ -72,7 +93,7 @@ class _HomeScreenState extends State<HomeScreen> {
     for (AtKey key in response) {
       String? keyStr = key.key;
       if (keyStr != "signing_privatekey") {
-        String val = await lookup(key);
+        var val = await lookup(key);
         values.add({keyStr!: val});
       }
     }

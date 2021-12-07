@@ -1,6 +1,7 @@
 // ignore_for_file: non_constant_identifier_names, avoid_print
 
 import 'dart:io';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
 
@@ -34,6 +35,7 @@ class _AddArticleState extends State<AddArticle> {
   var dropDownItems = ["", "Easy", "Medium", "Hard"];
   String selectedDifficulty = "";
   File? articleImage;
+  List? images;
   List<String> tags = [];
 
   void createArticle() async {
@@ -51,7 +53,9 @@ class _AddArticleState extends State<AddArticle> {
         description: descController.text,
         tools: tools,
         steps: steps,
-        datePosted: DateTime.now(),
+        images: images,
+        tags: tags,
+        // datePosted: DateTime.now(),
         difficulty: selectedDifficulty == "" ? null : selectedDifficulty,
         isPrivate: isArticlePrivate,
         privateFields: privateFields);
@@ -76,17 +80,25 @@ class _AddArticleState extends State<AddArticle> {
     key.sharedWith = atSign;
 
     var success =
-        await atClientManager.atClient.put(key, articleJson.toString());
+        await atClientManager.atClient.put(key, json.encode(articleJson));
     // success ? print("Yay") : print("Boo!");
   }
 
   Future imagePicker() async {
-    final image = await ImagePicker().pickImage(source: ImageSource.camera);
+    // final image = await ImagePicker().pickImage(source: ImageSource.gallery);
+    final allImages = await ImagePicker().pickMultiImage();
     try {
-      if (image == null) return;
-      final imageTemp = File(image.path);
-      setState(() => articleImage = imageTemp);
-      print(imageTemp);
+      // if (image == null) return;
+      // final imageTemp = File(image.path);
+      // setState(() => articleImage = imageTemp);
+      // print(imageTemp);
+      if (allImages == null) return;
+      final imagesTemp = allImages
+          .map((img) => base64Encode(File(img.path).readAsBytesSync()))
+          .toList();
+      print(imagesTemp[0]);
+      setState(() => images = imagesTemp);
+      print(imagesTemp);
     } catch (e) {
       print(e);
     }
@@ -95,7 +107,6 @@ class _AddArticleState extends State<AddArticle> {
   @override
   Widget build(BuildContext context) {
     // var atClientManager = AtClientManager.getInstance();
-    final List<XFile>? images;
 
     return Scaffold(
       appBar: AppBar(
@@ -187,7 +198,6 @@ class _AddArticleState extends State<AddArticle> {
                 ],
               ),
             ),
-
             DropdownButton(
               value: selectedDifficulty,
               items:
@@ -246,7 +256,7 @@ class _AddArticleState extends State<AddArticle> {
                 },
               ),
             ),
-            // articleImage != null ? Image.file(articleImage!) : Container(),
+            // images != null ? Image.file(images![0]) : Container(),
             ElevatedButton(
               onPressed: () => createArticle(),
               child: const Text("Create Article"),
