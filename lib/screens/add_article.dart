@@ -70,34 +70,33 @@ class _AddArticleState extends State<AddArticle> {
     // Metadata metadata = Metadata.fromJson(metaJson);
 
     // Metadata metadata = Metadata();
-    // metadata.isPublic = true;
+    // metadata.isPublic = !isArticlePrivate;
+    // metadata.isCached = !isArticlePrivate;
+    // metadata.isHidden = false;S
     // metadata.ttr = 1;
 
-    AtKey key = AtKey();
-    key.key = nameController.text;
-    // key.metadata = metadata;
-    key.namespace = NAMESPACE;
-    key.sharedWith = atSign;
+    var metaData = Metadata()..isPublic = true;
 
-    await atClientManager.atClient.put(key, json.encode(articleJson));
-    // success ? print("Yay") : print("Boo!");
+    var atKey = AtKey()
+      ..key = nameController.text
+      ..metadata = metaData
+      ..namespace = NAMESPACE
+      ..sharedWith = atSign;
+
+    var success = await atClientManager.atClient
+        .put(atKey, json.encode(articleJson), isDedicated: true);
+    // await atClientManager.atClient.putMeta(atKey);
+    success ? print("Yay") : print("Boo!");
   }
 
   Future imagePicker() async {
-    // final image = await ImagePicker().pickImage(source: ImageSource.gallery);
     final allImages = await ImagePicker().pickMultiImage();
     try {
-      // if (image == null) return;
-      // final imageTemp = File(image.path);
-      // setState(() => articleImage = imageTemp);
-      // print(imageTemp);
       if (allImages == null) return;
       final imagesTemp = allImages
           .map((img) => base64Encode(File(img.path).readAsBytesSync()))
           .toList();
-      print(imagesTemp[0]);
       setState(() => images = imagesTemp);
-      print(imagesTemp);
     } catch (e) {
       print(e);
     }
@@ -105,8 +104,6 @@ class _AddArticleState extends State<AddArticle> {
 
   @override
   Widget build(BuildContext context) {
-    // var atClientManager = AtClientManager.getInstance();
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('Add Article'),
@@ -255,7 +252,6 @@ class _AddArticleState extends State<AddArticle> {
                 },
               ),
             ),
-            // images != null ? Image.file(images![0]) : Container(),
             ElevatedButton(
               onPressed: () => createArticle(),
               child: const Text("Create Article"),

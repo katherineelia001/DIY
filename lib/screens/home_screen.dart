@@ -47,7 +47,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: ListView.builder(
                     itemCount: results.length,
                     itemBuilder: (BuildContext context, int index) {
-                      print(results);
+                      // print(results);
                       // Article article = Article(
                       //     name: "Testing", isPrivate: false, privateFields: {});
                       var articlejson =
@@ -96,7 +96,9 @@ class _HomeScreenState extends State<HomeScreen> {
       String? keyStr = key.key;
       if (keyStr != "signing_privatekey") {
         var val = await lookup(key);
-        values.add({keyStr!: val});
+        if (val != null) values.add({keyStr!: val});
+        // var isDeleted = await atClientManager.atClient.delete(key);
+        // isDeleted ? print("Deleted") : print("Not Deleted");
       }
     }
 
