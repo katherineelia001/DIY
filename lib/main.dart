@@ -78,7 +78,9 @@ class _MyAppState extends State<MyApp> {
     );
   }
 }
-// The class for the drawer
+// The class for the drawer. We need to add drawer: AppDrawer(),
+//to the scaffold of every page in the app so the user is always
+//able to navigate around.
 class AppDrawer extends StatelessWidget {
   const AppDrawer({Key? key}) : super(key: key);
   @override
@@ -101,7 +103,6 @@ class AppDrawer extends StatelessWidget {
                     MaterialPageRoute(
                       builder: (context) => const SearchPage()),
                    );
-                //Navigator.pop(context);
               },
             ),
             ListTile(
@@ -162,6 +163,7 @@ class SearchPage extends StatefulWidget {
 Icon customIcon = const Icon(Icons.search);
 Widget customSearchBar = const Text('Search DIY Journals');
 
+//Search page
 class SearchPageState extends State<SearchPage> {
     TextEditingController editingController = TextEditingController();
   //final List<String> entries = <String>['A', 'B', 'C', 'D', 
@@ -206,45 +208,6 @@ void initState(){
       appBar: AppBar(
         title: const Text('Search Page'),
         ),
-      // appBar: AppBar(
-      //   //drawer: const AppDrawer(),
-      //   title: customSearchBar,
-      //   centerTitle: true,
-      //   automaticallyImplyLeading: false,
-      //   actions: [
-      //     IconButton(
-      //         onPressed: () {
-      //           setState(() {
-      //             if (customIcon.icon == Icons.search) {
-      //               customIcon = const Icon(Icons.cancel);
-      //               customSearchBar = const ListTile(
-      //                 leading: Icon(
-      //                   Icons.search,
-      //                   color: Colors.white,
-      //                   size: 28,
-      //                 ),
-      //                 title: TextField(
-      //                   decoration: InputDecoration(
-      //                     border: InputBorder.none,
-      //                     labelText: 'type in DYI journal name...',
-      //                     labelStyle: TextStyle(
-      //                       color: Colors.white,
-      //                       fontSize: 18,
-      //                       fontStyle: FontStyle.italic,
-      //                     ),
-      //                   ),
-      //                 ),
-      //               );
-      //             } else {
-      //               customIcon = const Icon(Icons.search);
-      //               customSearchBar = const Text('Search DIY journals');
-      //             }
-      //           });
-      //         },
-      //         icon: customIcon)
-      //   ],
-      // ),
-
  body: Column(
    children: <Widget>[
      Padding(
@@ -286,28 +249,4 @@ void initState(){
 
 
 
-// class ArticleListView extends StatefulWidget {
-//   const ArticleListView({Key? key}) : super(key: key);
 
-//   @override
-//   _ArticleListViewState createState() => _ArticleListViewState();
-// }
-// class _ArticleListViewState extends State<ArticleListView> {
-
-// @override
-//   Widget build(BuildContext context) {
-// final List<String> entries = <String>['A', 'B', 'C'];
-// final List<int> colorCodes = <int>[600, 500, 100];
-//   return ListView.builder(
-//       padding: const EdgeInsets.all(8),
-//       itemCount: entries.length,
-//       itemBuilder: (BuildContext context, int index){
-//         return Container(
-//           height: 50,
-//           color: Colors.amber[colorCodes[index]],
-//           child: Center(child: Text('Entry ${entries[index]}')),
-//         );
-//       },
-//     );
-// }
-// }
