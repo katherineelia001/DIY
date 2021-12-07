@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:diy/screens/search_page.dart';
+import 'package:diy/widgets/drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:at_client_mobile/at_client_mobile.dart';
 import 'package:at_onboarding_flutter/at_onboarding_flutter.dart'
@@ -78,47 +80,7 @@ class _MyAppState extends State<MyApp> {
     );
   }
 }
-// The class for the drawer. We need to add drawer: AppDrawer(),
-//to the scaffold of every page in the app so the user is always
-//able to navigate around.
-class AppDrawer extends StatelessWidget {
-  const AppDrawer({Key? key}) : super(key: key);
-  @override
-  Widget build(BuildContext context){
-    return Drawer(
-      child: ListView(
-          padding: EdgeInsets.zero,
-          children: [
-            const DrawerHeader(
-              decoration: BoxDecoration(
-                color: Colors.purple,
-              ),
-              child: Text('Drawer Header'),
-            ),
-            ListTile(
-              title: const Text('Search DIY Journals'),
-              onTap: () {
-                   Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const SearchPage()),
-                   );
-              },
-            ),
-            ListTile(
-              title: const Text('Dashboard'),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const HomeScreen()),
-                );
-              }
-            ),
-          ]
-      )
-    );
-  }
-}
+
 //* The next screen after onboarding (second screen)
 class HomeScreen extends StatelessWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -138,115 +100,9 @@ class HomeScreen extends StatelessWidget {
 
           /// Use the AtClientManager instance to get the current atsign
           Text('Current @sign: ${atClientManager.atClient.getCurrentAtSign()}'),
-          ElevatedButton(
-              child: const Text('Search DIY Journals'),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const SearchPage()),
-                );
-              })
         ],
       ),
       drawer: const AppDrawer(),
     );
   }
 }
-
-class SearchPage extends StatefulWidget {
-  const SearchPage({Key? key}) : super(key: key);
-
-  @override
-  SearchPageState createState() => SearchPageState();
-}
-
-Icon customIcon = const Icon(Icons.search);
-Widget customSearchBar = const Text('Search DIY Journals');
-
-//Search page
-class SearchPageState extends State<SearchPage> {
-    TextEditingController editingController = TextEditingController();
-  //final List<String> entries = <String>['A', 'B', 'C', 'D', 
-  //'E','F','G', 'H', 'I', 'J', 'K', 'L','M','N','O','P',
-  //'Q','R', 'S', 'T', 'U','V','W','X','Y','Z'];
-final duplicateItems = List<String>.generate(100, (i) => "Item $i");
-var items = <String>[];
-
-@override
-void initState(){
-  items.addAll(duplicateItems);
-  super.initState();
-}
-
-  void filterSearchResults(String query) {
-    List<String> dummySearchList = <String>[];
-    dummySearchList.addAll(duplicateItems);
-    if(query.isNotEmpty) {
-      List<String> dummyListData = <String>[];
-      dummySearchList.forEach((item) {
-        if(item.contains(query)) {
-          dummyListData.add(item);
-        }
-      });
-      setState(() {
-        items.clear();
-        items.addAll(dummyListData);
-      });
-      return;
-    } else {
-      setState(() {
-        items.clear();
-        items.addAll(duplicateItems);
-      });
-    }
-
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Search Page'),
-        ),
- body: Column(
-   children: <Widget>[
-     Padding(
-       padding: const EdgeInsets.all(8.0),
-       child: TextField(
-         onChanged: (value) {
-           filterSearchResults(value);
-         },
-         controller: editingController,
-         decoration: const InputDecoration(
-             labelText: "Search for DIY Articles",
-             hintText: "Search",
-             prefixIcon: Icon(Icons.search),
-             border: OutlineInputBorder(
-                 borderRadius: BorderRadius.all(Radius.circular(25.0)))),
-         ),
-     ),
-     Expanded(
-       child:ListView.builder(
-         shrinkWrap: true,
-         padding: const EdgeInsets.all(8),
-         itemCount: items.length,
-         itemBuilder: (BuildContext context, int index){
-           return Container(
-             
-             height: 50,
-             color: Colors.blue[100],
-             child: Center(child: Text('Entry ${items[index]}')),
-       );
-         },
-       ),
-     ),
-   ],
- ),
-       drawer: const AppDrawer(),
-        );
-  }
-}
-
-
-
-
