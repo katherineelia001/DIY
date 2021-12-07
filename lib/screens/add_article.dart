@@ -79,8 +79,7 @@ class _AddArticleState extends State<AddArticle> {
     key.namespace = NAMESPACE;
     key.sharedWith = atSign;
 
-    var success =
-        await atClientManager.atClient.put(key, json.encode(articleJson));
+    await atClientManager.atClient.put(key, json.encode(articleJson));
     // success ? print("Yay") : print("Boo!");
   }
 

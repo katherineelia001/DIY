@@ -42,6 +42,7 @@ class _MyAppState extends State<MyApp> {
   final AtSignLogger _logger = AtSignLogger(AtEnv.appNamespace);
   @override
   Widget build(BuildContext context) {
+    print(AtEnv.appNamespace);
     return MaterialApp(
       // * The onboarding screen (first screen)
       routes: {'/add-guide': (context) => const AddArticle()},

@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:diy/models/article.dart';
 import 'package:diy/screens/view_article.dart';
 import 'package:diy/screens/add_article.dart';
-import 'package:diy/constant.dart';
 
 import 'package:at_client_mobile/at_client_mobile.dart';
 import 'package:at_commons/at_commons.dart';
@@ -48,6 +47,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: ListView.builder(
                     itemCount: results.length,
                     itemBuilder: (BuildContext context, int index) {
+                      print(results);
+                      // Article article = Article(
+                      //     name: "Testing", isPrivate: false, privateFields: {});
                       var articlejson =
                           json.decode(results[index].values.elementAt(0));
                       var article = Article.fromJson(articlejson);
@@ -103,7 +105,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<List<Map<String, dynamic>>> scanNamespaceArticles() async {
     var atClientManager = AtClientManager.getInstance();
-    String myRegex = '^(?!public).*at_skeleton_app.*';
+    String myRegex = '^(?!public).*diy.*';
     List<AtKey> response =
         await atClientManager.atClient.getAtKeys(regex: myRegex);
 
