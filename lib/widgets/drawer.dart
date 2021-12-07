@@ -23,13 +23,15 @@ class AppDrawer extends StatelessWidget {
       child: ListView(
           padding: EdgeInsets.zero,
           children: [
-            const DrawerHeader(
-              decoration: BoxDecoration(
-                color: Colors.purple,
-              ),
-              child: Text('Drawer Header'),
-            ),
+            _createHeader(),
+            // const DrawerHeader(
+            //   decoration: BoxDecoration(
+            //     color: Colors.purple,
+            //   ),
+            //   child: Text('Drawer Header'),
+            // ),
             ListTile(
+              leading: Icon(Icons.search),
               title: const Text('Search DIY Journals'),
               onTap: () {
                    Navigator.push(
@@ -40,7 +42,8 @@ class AppDrawer extends StatelessWidget {
               },
             ),
             ListTile(
-              title: const Text('Dashboard'),
+              leading: Icon(Icons.home),
+              title: const Text('Homepage'),
               onTap: () {
                 Navigator.push(
                   context,
@@ -52,4 +55,23 @@ class AppDrawer extends StatelessWidget {
       )
     );
   }
+}
+
+Widget _createHeader() {
+  return DrawerHeader(
+      margin: EdgeInsets.zero,
+      padding: EdgeInsets.zero,
+      decoration: BoxDecoration(
+          color: Colors.purple[800],
+              ),
+      child: Stack(children: <Widget>[
+        Positioned(
+            bottom: 12.0,
+            left: 16.0,
+            child: Text("Do It Youself!",
+                style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 20.0,
+                    fontWeight: FontWeight.w500))),
+      ]));
 }
