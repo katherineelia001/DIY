@@ -39,7 +39,7 @@ class _HomeScreenState extends State<HomeScreen> {
             child: const Text("Add Article"),
           ),
           FutureBuilder(
-            future: scanNamespaceArticles(),
+            future: scanYourArticles(),
             builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
               if (snapshot.hasData) {
                 List<Map<String, dynamic>> results = snapshot.data;

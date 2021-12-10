@@ -72,20 +72,24 @@ class _AddArticleState extends State<AddArticle> {
     // Metadata metadata = Metadata();
     // metadata.isPublic = !isArticlePrivate;
     // metadata.isCached = !isArticlePrivate;
-    // metadata.isHidden = false;S
+    // metadata.isHidden = false;
     // metadata.ttr = 1;
 
-    var metaData = Metadata()..isPublic = true;
+    var metaData = Metadata()
+      ..isPublic = true
+      ..isEncrypted = false;
+    // ..namespaceAware = true;
 
     var atKey = AtKey()
       ..key = nameController.text
       ..metadata = metaData
       ..namespace = NAMESPACE
-      ..sharedWith = atSign;
+      ..sharedWith = null
+      ..sharedBy = atSign;
 
     var success = await atClientManager.atClient
         .put(atKey, json.encode(articleJson), isDedicated: true);
-    // await atClientManager.atClient.putMeta(atKey);
+
     success ? print("Yay") : print("Boo!");
   }
 
@@ -217,10 +221,6 @@ class _AddArticleState extends State<AddArticle> {
               ),
             ),
             Tags(
-              // runSpacing: 1,
-              // horizontalScroll: true,
-
-              // symmetry: true,
               itemCount: tags.length,
               itemBuilder: (int index) {
                 final item = tags[index];
@@ -228,10 +228,12 @@ class _AddArticleState extends State<AddArticle> {
                   key: Key(index.toString()),
                   index: index,
                   title: item,
-                  removeButton: ItemTagsRemoveButton(onRemoved: () {
-                    setState(() => tags.removeAt(index));
-                    return true;
-                  }),
+                  removeButton: ItemTagsRemoveButton(
+                    onRemoved: () {
+                      setState(() => tags.removeAt(index));
+                      return true;
+                    },
+                  ),
                 );
               },
               textField: TagsTextField(

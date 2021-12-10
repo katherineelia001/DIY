@@ -4,6 +4,7 @@ import 'package:diy/screens/add_article.dart';
 import 'package:diy/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:at_client_mobile/at_client_mobile.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:at_onboarding_flutter/at_onboarding_flutter.dart'
     show Onboarding;
 import 'package:at_utils/at_logger.dart' show AtSignLogger;
@@ -45,6 +46,25 @@ class _MyAppState extends State<MyApp> {
     print(AtEnv.appNamespace);
     return MaterialApp(
       // * The onboarding screen (first screen)
+      // TODO set color scheme of app
+      // theme: ThemeData(
+      //   textTheme: TextTheme(
+      //     headline1: GoogleFonts.oswald(
+      //       fontSize: 32,
+      //       color: Colors.black,
+      //     ),
+      //     headline4: GoogleFonts.oswald(
+      //       fontSize: 20,
+      //       color: Colors.black,
+      //       // fontWeight: FontWeight.w500
+      //     ),
+      //     headline6: GoogleFonts.oswald(
+      //       fontSize: 14,
+      //       color: Colors.black,
+      //     ),
+      //   ),
+      // ),
+
       routes: {'/add-guide': (context) => const AddArticle()},
       home: Scaffold(
         appBar: AppBar(

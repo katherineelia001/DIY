@@ -31,14 +31,22 @@ class ViewArticle extends StatelessWidget {
                 ? Padding(
                     padding: const EdgeInsets.symmetric(
                         horizontal: 15, vertical: 10),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Text(article.name),
-                        Text(article.name),
-                        Text(article.name),
-                      ],
+                    child: SizedBox(
+                      width: MediaQuery.of(context).size.width,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        // mainAxisAlignment: MainAxisAlignment.end,
+                        children: <Widget>[
+                          const Text(
+                            "Description",
+                            // style: Theme.of(context).textTheme.headline1,
+                          ),
+                          const SizedBox(
+                            height: 15,
+                          ),
+                          Text(article.description!),
+                        ],
+                      ),
                     ),
                   )
                 : Container()),
