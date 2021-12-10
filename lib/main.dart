@@ -1,9 +1,12 @@
 import 'dart:async';
 
+import 'package:diy/screens/add_article.dart';
+import 'package:diy/screens/home_screen.dart';
 import 'package:diy/screens/search_page.dart';
 import 'package:diy/widgets/drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:at_client_mobile/at_client_mobile.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:at_onboarding_flutter/at_onboarding_flutter.dart'
     show Onboarding;
 import 'package:at_utils/at_logger.dart' show AtSignLogger;
@@ -40,11 +43,31 @@ class _MyAppState extends State<MyApp> {
   AtClientPreference? atClientPreference;
 
   final AtSignLogger _logger = AtSignLogger(AtEnv.appNamespace);
-
   @override
   Widget build(BuildContext context) {
+    print(AtEnv.appNamespace);
     return MaterialApp(
       // * The onboarding screen (first screen)
+      // TODO set color scheme of app
+      // theme: ThemeData(
+      //   textTheme: TextTheme(
+      //     headline1: GoogleFonts.oswald(
+      //       fontSize: 32,
+      //       color: Colors.black,
+      //     ),
+      //     headline4: GoogleFonts.oswald(
+      //       fontSize: 20,
+      //       color: Colors.black,
+      //       // fontWeight: FontWeight.w500
+      //     ),
+      //     headline6: GoogleFonts.oswald(
+      //       fontSize: 14,
+      //       color: Colors.black,
+      //     ),
+      //   ),
+      // ),
+      debugShowCheckedModeBanner: false,
+      routes: {'/add-guide': (context) => const AddArticle()},
       home: Scaffold(
         appBar: AppBar(
           title: const Text('MyApp'),
@@ -81,28 +104,31 @@ class _MyAppState extends State<MyApp> {
   }
 }
 
-//* The next screen after onboarding (second screen)
-class HomeScreen extends StatelessWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+// //* The next screen after onboarding (second screen)
+// class HomeScreen extends StatelessWidget {
+//   const HomeScreen({Key? key}) : super(key: key);
 
-  @override
-  Widget build(BuildContext context) {
-    /// Get the AtClientManager instance
-    var atClientManager = AtClientManager.getInstance();
+//   @override
+//   Widget build(BuildContext context) {
+//     /// Get the AtClientManager instance
+//     var atClientManager = AtClientManager.getInstance();
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Dashboard'),
-      ),
-      body: Column(
-        children: [
-          const Text('Success onboarded and navigated to FirstAppScreen'),
+//     return Scaffold(
+//       appBar: AppBar(
+//         title: const Text('Dashboard'),
+//       ),
+//       body: Center(
+//         child: Column(
+//           children: [
+//             const Text(
+//                 'Successfully onboarded and navigated to FirstAppScreen'),
 
-          /// Use the AtClientManager instance to get the current atsign
-          Text('Current @sign: ${atClientManager.atClient.getCurrentAtSign()}'),
-        ],
-      ),
-      drawer: const AppDrawer(),
-    );
-  }
-}
+//             /// Use the AtClientManager instance to get the current atsign
+//             Text(
+//                 'Current @sign: ${atClientManager.atClient.getCurrentAtSign()}'),
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+// }
