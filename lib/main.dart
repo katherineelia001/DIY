@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:diy/screens/add_article.dart';
 import 'package:diy/screens/home_screen.dart';
+import 'package:diy/screens/search_page.dart';
+import 'package:diy/widgets/drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:at_client_mobile/at_client_mobile.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -93,7 +95,7 @@ class _MyAppState extends State<MyApp> {
                   nextScreen: const HomeScreen(),
                 );
               },
-              child: const Text('Onboard an @sign'),
+              child: const Text('Onboard the @sign'),
             ),
           ),
         ),
