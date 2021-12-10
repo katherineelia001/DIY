@@ -46,8 +46,10 @@ class _AddArticleState extends State<AddArticle> {
       'steps': isStepsPrivate,
       // 'difficulty': isDifficultyPrivate
     };
-    List<String> tools = toolsController.text.split(",");
-    List<String> steps = stepsController.text.split(",");
+    List<String> tools =
+        toolsController.text.split(",").map((t) => t.trim()).toList();
+    List<String> steps =
+        stepsController.text.split(",").map((s) => s.trim()).toList();
     Article article = Article(
         name: nameController.text,
         description: descController.text,
@@ -64,33 +66,25 @@ class _AddArticleState extends State<AddArticle> {
 
     String? atSign = AtClientManager.getInstance().atClient.getCurrentAtSign();
 
-    // Map metaJson = Metadata().toJson();
-    // metaJson['isPublic'] = true;
-    // metaJson['ttr'] = 1;
-    // Metadata metadata = Metadata.fromJson(metaJson);
-
-    // Metadata metadata = Metadata();
-    // metadata.isPublic = !isArticlePrivate;
-    // metadata.isCached = !isArticlePrivate;
-    // metadata.isHidden = false;
-    // metadata.ttr = 1;
-
     var metaData = Metadata()
       ..isPublic = true
-      ..isEncrypted = false;
-    // ..namespaceAware = true;
+      ..isEncrypted = false
+      ..namespaceAware = true
+      ..ttl = 3600000;
 
     var atKey = AtKey()
       ..key = nameController.text
-      ..metadata = metaData
-      ..namespace = NAMESPACE
-      ..sharedWith = null
-      ..sharedBy = atSign;
+      // ..namespace = NAMESPACE
+      // ..sharedBy = atSign
+      ..sharedWith = atSign;
+    // ..metadata = metaData;
 
     var success = await atClientManager.atClient
         .put(atKey, json.encode(articleJson), isDedicated: true);
 
-    success ? print("Yay") : print("Boo!");
+    if (success) {
+      Navigator.pop(context);
+    }
   }
 
   Future imagePicker() async {
@@ -250,7 +244,7 @@ class _AddArticleState extends State<AddArticle> {
                 ),
                 hintText: "Enter article's tags",
                 onSubmitted: (String? str) {
-                  setState(() => tags.add(str!));
+                  setState(() => tags.add(str!.trim()));
                 },
               ),
             ),

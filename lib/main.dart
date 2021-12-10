@@ -64,7 +64,7 @@ class _MyAppState extends State<MyApp> {
       //     ),
       //   ),
       // ),
-
+      debugShowCheckedModeBanner: false,
       routes: {'/add-guide': (context) => const AddArticle()},
       home: Scaffold(
         appBar: AppBar(

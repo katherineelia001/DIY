@@ -12,6 +12,15 @@ class ViewArticle extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(article.name),
+        centerTitle: true,
+        actions: <Widget>[
+          IconButton(
+            icon: const Icon(Icons.edit),
+            onPressed: () {
+              // TODO edit page
+            },
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -35,7 +44,6 @@ class ViewArticle extends StatelessWidget {
                       width: MediaQuery.of(context).size.width,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
-                        // mainAxisAlignment: MainAxisAlignment.end,
                         children: <Widget>[
                           const Text(
                             "Description",
@@ -45,11 +53,68 @@ class ViewArticle extends StatelessWidget {
                             height: 15,
                           ),
                           Text(article.description!),
+                          const SizedBox(
+                            height: 20,
+                          )
                         ],
                       ),
                     ),
                   )
                 : Container()),
+            (article.tools != null
+                ? Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 15, vertical: 10),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text("Tools"),
+                        const SizedBox(
+                          height: 15,
+                        ),
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width,
+                          // height: 500,
+                          child: ListView.builder(
+                              physics: const NeverScrollableScrollPhysics(),
+                              shrinkWrap: true,
+                              itemCount: article.tools!.length,
+                              itemBuilder: (BuildContext context, int index) {
+                                return Text(article.tools![index].trim());
+                              }),
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        )
+                      ],
+                    ),
+                  )
+                : Container()),
+            (article.steps != null
+                ? Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 15, vertical: 10),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text("Steps"),
+                        const SizedBox(
+                          height: 15,
+                        ),
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width,
+                          // height: 500,
+                          child: ListView.builder(
+                              shrinkWrap: true,
+                              itemCount: article.steps!.length,
+                              itemBuilder: (BuildContext context, int index) {
+                                return Text(article.steps![index].trim());
+                              }),
+                        ),
+                      ],
+                    ),
+                  )
+                : Container())
           ],
         ),
       ),
