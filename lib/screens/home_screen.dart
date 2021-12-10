@@ -1,6 +1,7 @@
 // ignore_for_file: avoid_print
 import 'dart:convert';
 
+import 'package:diy/widgets/drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:diy/models/article.dart';
 import 'package:diy/screens/view_article.dart';
@@ -23,6 +24,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: const AppDrawer(),
       appBar: AppBar(
         title: const Text('Home'),
       ),
