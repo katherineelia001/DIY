@@ -26,14 +26,20 @@ class SearchPageState extends State<SearchPage> {
   var atClientManager = AtClientManager.getInstance();
 
     TextEditingController editingController = TextEditingController();
-    late List <Map <String, dynamic>> foundArticles;
+    List <Map <String, dynamic>> allArticles =[];
+    List <Map <String, dynamic>> filteredArticles =[];
 
-  // List<Map<String, dynamic>>? get yourlist => null;
-  //   @override
-  //   void initState(){
-  //     super.initState();
-  //     foundArticles = yourlist;
-  //   }
+   @override
+       void initState(){
+       
+       super.initState();
+       scanYourArticles().then((articles) {
+         setState(() {
+           allArticles = articles;
+           filteredArticles = articles;
+         });
+       });
+     }
 
   @override
   Widget build(BuildContext context) {
@@ -46,36 +52,6 @@ class SearchPageState extends State<SearchPage> {
       ),
       body:  Column(
         children: [
-          FutureBuilder(
-            future: scanYourArticles(),
-            builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-              if(snapshot.hasData) {
-                List<Map<String, dynamic>> yourlist = snapshot.data;
-    void initState(){
-      super.initState();
-      foundArticles = yourlist;
-    }
- 
-  // This function is called whenever the text field changes
-  void _runFilter(String enteredKeyword) {
-    List<Map<String, dynamic>> results;
-    if (enteredKeyword.isEmpty) {
-      // if the search field is empty or only contains white-space, we'll display all users
-      results = yourlist;
-    } else {
-      results = yourlist
-          .where((user) =>
-              user["name"].toLowerCase().contains(enteredKeyword.toLowerCase()))
-          .toList();
-      // we use the toLowerCase() method to make it case-insensitive
-    }
-
-    // Refresh the UI
-    setState(() {
-      foundArticles = results;
-    });
-  }
-
      Padding(
         padding: const EdgeInsets.all(8.0),
         child: TextField(
@@ -88,15 +64,15 @@ class SearchPageState extends State<SearchPage> {
              border: OutlineInputBorder(
                  borderRadius: BorderRadius.all(Radius.circular(25.0)))),
          ),
-     );
-              Expanded(
-                  //child:foundArticles.isNotEmpty
-                  //? ListView.builder(
-                    child: ListView.builder(
-                    itemCount: foundArticles.length,
+     ),
+     Expanded(
+       child: filteredArticles.isEmpty ? const Text('No results found',
+       ) :
+    ListView.builder(
+                    itemCount: filteredArticles.length,
                     itemBuilder: (BuildContext context, int index) {
                       var articlejson =
-                          json.decode(foundArticles[index].values.elementAt(0));
+                          json.decode(filteredArticles[index].values.elementAt(0));
                       var article = Article.fromJson(articlejson);
 
                       return Padding(
@@ -114,22 +90,36 @@ class SearchPageState extends State<SearchPage> {
                           },
                           child: Card(
                             elevation: 0,
-                            child: Text(foundArticles[index].keys.elementAt(0)),
+                            child: Text(filteredArticles[index].keys.elementAt(0)),
                           ),
                         ),
                       );
                     },
                   )
-                  
-              );
-              }
-              return const Text ("HAS NO DATA");
-            },
-            
-          ),
-           ],
+     ),
+        ]
       ),
     );
+  }
+
+  // This function is called whenever the text field changes
+  void _runFilter(String enteredKeyword) {
+    List<Map<String, dynamic>> results;
+    if (enteredKeyword.isEmpty) {
+      // if the search field is empty or only contains white-space, we'll display all users
+      results = allArticles;
+    } else {
+      results = allArticles
+          .where((articles) =>
+              articles["name"].toLowerCase().contains(enteredKeyword.toLowerCase()))
+          .toList();
+      // we use the toLowerCase() method to make it case-insensitive
+    }
+
+    // Refresh the UI
+    setState(() {
+      filteredArticles = results;
+    });
   }
 
   Future<List<Map<String, dynamic>>> scanYourArticles() async {
