@@ -55,13 +55,17 @@ class SearchPageState extends State<SearchPage> {
                 labelText: "Search for DIY Articles",
                 hintText: "Search",
                 prefixIcon: Icon(Icons.search),
-                border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(25.0)))),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(25.0),
+                  )
+                  )
+                  ),
           ),
         ),
         Expanded(
             child: filteredArticles.isEmpty
                 ? const Text(
-                    'No results found',
+                    'No results found.',
                   )
                 : ListView.builder(
                     itemCount: filteredArticles.length,
@@ -81,12 +85,45 @@ class SearchPageState extends State<SearchPage> {
                               ),
                             ),
                           },
-                          child: Card(
-                            elevation: 0,
-                            child: Text(article.name),
-                          ),
-                        ),
-                      );
+                          // child: Card(
+                          //   elevation: 0,
+                          //   child: Text(article.name),
+
+                            child: Card(
+                                elevation: 0,
+                                color: Colors.grey[850],
+                                child: Column(children: [
+                                  Text(article.name,
+                                      textAlign: TextAlign.center,
+                                      style: (const TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 26,
+                                          height: 1.5))),
+                                  Padding(
+                                      padding: EdgeInsets.all(8.0),
+                                      child: Text(article.description!,
+                                          style: const TextStyle(
+                                              color: Colors.white))),
+                                  (article.difficulty != null
+                                      ? Padding(
+                                          padding: const EdgeInsets.only(
+                                              bottom: 8.0),
+                                          child: RichText(
+                                              text:
+                                                  TextSpan(children: <TextSpan>[
+                                            const TextSpan(
+                                                text: "Difficulty: ",
+                                                style: TextStyle(
+                                                    color: Colors.white)),
+                                            TextSpan(
+                                                text: article.difficulty!,
+                                                style: const TextStyle(
+                                                    color: Colors.white))
+                                          ])))
+                          : Container()),
+                                ]))),
+                        );
+                      
                     },
                   )),
       ]),
